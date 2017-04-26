@@ -18,6 +18,7 @@ import static org.junit.Assert.assertFalse;
 /**
  * Created by Daniele Berton on 26/04/2017.
  */
+
 public class ReadOperationTest {
 
     public static final String MONTH = "2015-12";
@@ -39,12 +40,10 @@ public class ReadOperationTest {
 
     public static final String CHECKIN_PATTERN = JOE_PATTERN + "-[checkin:" + TYPE + " {on:'" + DATE + "'}]->" + PHILZ_PATTERN;
     private GraphDatabaseService db;
-    private IndexManager index;
 
     @Before
     public void setUp() throws Exception {
         db = new TestGraphDatabaseFactory().newImpermanentDatabase();
-        index = db.index();
         registerProcedure(db, ReadOperationProcedure.class);
     }
 
@@ -77,15 +76,12 @@ public class ReadOperationTest {
                 }
                 assertFalse(res.hasNext());
             } catch(Throwable t) {
-                //printFullStackTrace(t);
+                t.printStackTrace();
                 throw t;
             }
         });
     }
 
-    public static void testResult(GraphDatabaseService db, String call, Consumer<Result> resultConsumer) {
-        testResult(db,call,null,resultConsumer);
-    }
     public static void testResult(GraphDatabaseService db, String call, Map<String,Object> params, Consumer<Result> resultConsumer) {
         try (Transaction tx = db.beginTx()) {
             Map<String, Object> p = (params == null) ? Collections.<String, Object>emptyMap() : params;
@@ -104,11 +100,9 @@ public class ReadOperationTest {
 
     private void createData() {
         testCall(db, "CREATE "+CHECKIN_PATTERN+" RETURN *",(row)->{
-            System.out.println("CHECKIN_PATTERN = " + CHECKIN_PATTERN);
             Node joe = (Node) row.get("joe");
             db.index().forNodes(PERSON).add(joe,"name",joe.getProperty("name"));
             Node philz = (Node) row.get("philz");
-            Relationship rel = (Relationship)  row.get("checkin");
             db.index().forNodes(PLACE).add(philz,"name",philz.getProperty("name"));
             db.index().forRelationships(TYPE).add((Relationship) row.get("checkin"),"on",DATE);
         });

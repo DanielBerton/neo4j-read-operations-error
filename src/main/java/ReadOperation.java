@@ -1,14 +1,8 @@
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.kernel.api.LegacyIndexHits;
 import org.neo4j.kernel.api.ReadOperations;
-import org.neo4j.kernel.api.exceptions.legacyindex.LegacyIndexNotFoundKernelException;
 import org.neo4j.kernel.impl.core.ThreadToStatementContextBridge;
 import org.neo4j.kernel.internal.GraphDatabaseAPI;
-import org.neo4j.procedure.Description;
-import org.neo4j.procedure.Mode;
-import org.neo4j.procedure.Procedure;
-
-import java.util.Map;
 
 /**
  * Created by Daniele Berton on 26/04/2017.
